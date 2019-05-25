@@ -11,6 +11,7 @@ from Ui_cover import Ui_Form
 from Ui_ChildrenForm2 import Ui_ChildrenForm
 
 from Ui_ChildrenForm3 import Ui_ChildrenFrom3
+from PyQt5 import*
 
 class Form(QWidget, Ui_Form):
     """

@@ -7,13 +7,16 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import(QWidget, QTableWidget, QHBoxLayout, QApplication, QTableWidgetItem)
+from PyQt5.QtWidgets import*
+from ConnectDB import*
 
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
-        Form.resize(474, 411)
+        Form.resize(1200, 1000)
         self.label = QtWidgets.QLabel(Form)
-        self.label.setGeometry(QtCore.QRect(30, -20, 411, 111))
+        self.label.setGeometry(QtCore.QRect(200, -20, 800, 111))
         font = QtGui.QFont()
         font.setFamily("Adobe 宋体 Std L")
         font.setPointSize(14)
@@ -27,7 +30,7 @@ class Ui_Form(object):
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.setObjectName("label")
         self.layoutWidget = QtWidgets.QWidget(Form)
-        self.layoutWidget.setGeometry(QtCore.QRect(140, 70, 161, 71))
+        self.layoutWidget.setGeometry(QtCore.QRect(200, 70, 600, 600))
         self.layoutWidget.setObjectName("layoutWidget")
         self.formLayout = QtWidgets.QFormLayout(self.layoutWidget)
         self.formLayout.setContentsMargins(0, 0, 0, 0)
@@ -60,42 +63,48 @@ class Ui_Form(object):
         font.setPointSize(12)
         self.comboBox.setFont(font)
         self.comboBox.setObjectName("comboBox")
-        self.comboBox.addItem("")
-        self.comboBox.addItem("")
-        self.comboBox.addItem("")
-        self.comboBox.addItem("")
+        
+        
+     
         self.verticalLayout_2.addWidget(self.comboBox)
         self.comboBox_2 = QtWidgets.QComboBox(self.layoutWidget)
         font = QtGui.QFont()
         font.setPointSize(12)
         self.comboBox_2.setFont(font)
         self.comboBox_2.setObjectName("comboBox_2")
-        self.comboBox_2.addItem("")
-        self.comboBox_2.addItem("")
+        #self.comboBox_2.addItem("")
+        #self.comboBox_2.addItem("")
         self.verticalLayout_2.addWidget(self.comboBox_2)
         self.comboBox_3 = QtWidgets.QComboBox(self.layoutWidget)
         font = QtGui.QFont()
         font.setPointSize(12)
         self.comboBox_3.setFont(font)
         self.comboBox_3.setObjectName("comboBox_3")
-        self.comboBox_3.addItem("")
-        self.comboBox_3.addItem("")
-        self.comboBox_3.addItem("")
-        self.comboBox_3.addItem("")
+        #self.comboBox_3.addItem("")
+        #self.comboBox_3.addItem("")
+        #self.comboBox_3.addItem("")
+        #self.comboBox_3.addItem("")
         self.verticalLayout_2.addWidget(self.comboBox_3)
         self.formLayout.setLayout(0, QtWidgets.QFormLayout.FieldRole, self.verticalLayout_2)
         self.pushButton = QtWidgets.QPushButton(Form)
-        self.pushButton.setGeometry(QtCore.QRect(360, 210, 56, 17))
+        self.pushButton.setGeometry(QtCore.QRect(900, 600, 100, 50))
         self.pushButton.setObjectName("pushButton")
-        self.tableView = QtWidgets.QTableView(Form)
-        self.tableView.setGeometry(QtCore.QRect(90, 190, 256, 192))
-        self.tableView.setObjectName("tableView")
-        self.tableView.setHidden(True)
-        self.label_5 = QtWidgets.QLabel(Form)
-        self.label_5.setGeometry(QtCore.QRect(140, 210, 81, 41))
-        self.label_5.setObjectName("label_5")
+        
+        #self.tableView = QtWidgets.QTableView(Form)
+        #self.tableView.setGeometry(QtCore.QRect(90, 190, 256, 192))
+        #self.tableView.setObjectName("tableView")
+        #self.tableView.setHidden(True)
+        
+        self.tableWidget = QtWidgets.QTableWidget()
+        self.tableWidget.setGeometry(QtCore.QRect(200, 500, 500, 500))
+        self.tableWidget.setObjectName("tableWidget")
+        self.tableWidget.setHidden(True)
+        
+        #self.label_5 = QtWidgets.QLabel(Form)
+        #self.label_5.setGeometry(QtCore.QRect(140, 210, 81, 41))
+        #self.label_5.setObjectName("label_5")
         self.widget = QtWidgets.QWidget(Form)
-        self.widget.setGeometry(QtCore.QRect(140, 150, 162, 22))
+        self.widget.setGeometry(QtCore.QRect(400, 200, 200, 100))
         self.widget.setObjectName("widget")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.widget)
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
@@ -111,39 +120,100 @@ class Ui_Form(object):
         self.label_2.setBuddy(self.comboBox)
         self.label_3.setBuddy(self.comboBox_2)
         self.label_4.setBuddy(self.comboBox_3)
+        
+        self.comboBox.activated[str].connect(self.Changetext1)
+        self.comboBox_2.activated[str].connect(self.Changetext2)
+        self.comboBox_3.activated[str].connect(self.Changetext3)
 
         self.retranslateUi(Form)
-        self.pushButton_3.clicked.connect(self.tableView.show)
+        self.pushButton_3.clicked.connect(self.tableWidget.show)
         QtCore.QMetaObject.connectSlotsByName(Form)
+    
+    
+    s1=""
+    s2=""
+    s3=""
+    def Changetext1(self, text):
+        self.s1=text
+        self.Choose()
+    def Changetext2(self, text):
+        self.s2=text
+        self.Choose()
+    def Changetext3(self, text):
+        self.s3=text
+        self.Choose()
+        
+        #print(self.s1+self.s2+self.s3)
+    def Choose(self):
+        if len(self.s1)*len(self.s3)*len(self.s3)>0:
+            db=connectDB('127.0.0.1', 'hhlschema', 'HHL', '12345' )
+            a, col, row=dataset("section", db, self.s1, self.s2, self.s3)
+            print(a)
 
+            
+            self.tableWidget.setColumnCount(col)
+            self.tableWidget.setRowCount(row)
+            self.tableWidget.setHorizontalHeaderLabels(['sec_id', 'year', 'room_number', 'time_solt_id'])
+            for i in range(row):
+                for j in range(col):
+                    if j==col-1:
+                        searchBtn=QPushButton(a[i][j])
+                        self.tableWidget.setCellWidget(i, j, searchBtn)
+                    else:
+                        self.tableWidget.setItem(i, j, QTableWidgetItem(str(a[i][j])))
+                        
+                        
+            
+           
+        
+    
+        
+    
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("Form", "Form"))
+        Form.setWindowTitle(_translate("Form", "FirstForm"))
         self.label.setText(_translate("Form", "2018年天津市普通高校招生批量投档录取最高分最低分数查询"))
-        self.label_2.setText(_translate("Form", "批次"))
-        self.label_3.setText(_translate("Form", "类别"))
-        self.label_4.setText(_translate("Form", "院校"))
-        self.comboBox.setItemText(0, _translate("Form", "本科提前批"))
-        self.comboBox.setItemText(1, _translate("Form", "本科一批"))
-        self.comboBox.setItemText(2, _translate("Form", "本科二批"))
-        self.comboBox.setItemText(3, _translate("Form", "高职高专"))
-        self.comboBox_2.setItemText(0, _translate("Form", "文科"))
-        self.comboBox_2.setItemText(1, _translate("Form", "理科"))
-        self.comboBox_3.setItemText(0, _translate("Form", "南开大学"))
-        self.comboBox_3.setItemText(1, _translate("Form", "清华大学"))
-        self.comboBox_3.setItemText(2, _translate("Form", "北京大学"))
-        self.comboBox_3.setItemText(3, _translate("Form", "中国科学院大学"))
+        self.label_2.setText(_translate("Form", "course_id"))
+        self.label_3.setText(_translate("Form", "semester"))
+        self.label_4.setText(_translate("Form", "building"))
+        
+        #self.comboBox.setItemText(0, _translate("Form", "本科提前批"))
+        #self.comboBox.setItemText(1, _translate("Form", "本科一批"))
+        #self.comboBox.setItemText(2, _translate("Form", "本科二批"))
+        #self.comboBox.setItemText(3, _translate("Form", "高职高专"))
+        #list1=self.Getlist("course_id")
+        self.comboBox.addItems(self.Getlist("course_id"))
+        
+        #self.comboBox_2.setItemText(0, _translate("Form", "文科"))
+        #self.comboBox_2.setItemText(1, _translate("Form", "理科"))
+        self.comboBox_2.addItems(self.Getlist("semester"))
+        
+        #self.comboBox_3.setItemText(0, _translate("Form", "南开大学"))
+        #self.comboBox_3.setItemText(1, _translate("Form", "清华大学"))
+        #self.comboBox_3.setItemText(2, _translate("Form", "北京大学"))
+        #self.comboBox_3.setItemText(3, _translate("Form", "中国科学院大学"))
+        self.comboBox_3.addItems(self.Getlist("building"))
+        
         self.pushButton.setText(_translate("Form", "专业信息"))
-        self.label_5.setText(_translate("Form", "好一点"))
+        #self.label_5.setText(_translate("Form", "好一点"))
         self.pushButton_3.setText(_translate("Form", "提交"))
         self.pushButton_2.setText(_translate("Form", "重置"))
+    
+    def Getlist(self, str):
+        db=connectDB('127.0.0.1', 'hhlschema', 'HHL', '12345' )
+        list=selectdistinct(str, "section", db)
+        db.close()
+        return list 
+    
+        
 
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    Form = QtWidgets.QWidget()
+    Form = QtWidgets.QMainWindow()
     ui = Ui_Form()
+    #print(ui.s1+ui.s2+ui.s3)
     ui.setupUi(Form)
     Form.show()
     sys.exit(app.exec_())
