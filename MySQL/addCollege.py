@@ -1,12 +1,14 @@
+# -*- coding: utf-8 -*-
 import pymysql
 
-cont = pymysql.connect(host='youggls.top',
-                       user='abcdefg', password='123456', database='test', charset='utf8')
+cont = pymysql.connect(host='127.0.0.1',
+                       user='HHL', password='12345', database='test', charset='utf8')
 cur = cont.cursor()
-with open('collegename/wenerben.txt', 'r')as fff:  # change the file name in collegename
+with open('collegename/wenerben.txt', 'rb')as fff:  # change the file name in collegename
     data = fff.readlines()
     for i in data:
-        a = i.split(',')
+        a = i.split(', ')
+
         a[1] = a[1].replace("\n", "")
         cur.execute("""INSERT INTO college (idcollege, name)
             SELECT '{}', '{}'
