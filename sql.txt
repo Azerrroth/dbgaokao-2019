@@ -3,6 +3,7 @@
 insert into rankArt (score,rank) select distinct tot_score, ifnull((select count(*) from Candidate
  where tot_score>t.tot_score),0)+1 as rank
 from Candidate t where type='普通文科' order by rank;
+
 生成第一个表
 ‘’里换成占位符由combobox内容确定
 select t.CollegeID,t.name,r.rank,t.ma,t.mi,t.c 
@@ -11,3 +12,10 @@ from (Candidate  join zhuanye on Candidate.zhuanye_ID=zhuanye.ID
 and Candidate.CollegeID=zhuanye.college_id) 
 where AdmissionLevel='本科一批' and CollegeName='中央民族大学' and Candidate.type='普通文科' group by zhuanye.name)
 as t join rankArt r on t.ma=score
+
+第三页的表其中name由button点击时确定其他条件继承前页
+select idCandidate,Candidate_name,tot_score,AdmitType,Admittime
+from Candidate  join zhuanye on Candidate.zhuanye_ID=zhuanye.ID 
+and Candidate.CollegeID=zhuanye.college_id
+where AdmissionLevel='本科一批' and CollegeName='中央民族大学' and Candidate.type='普通文科' 
+and name='经济学类'
