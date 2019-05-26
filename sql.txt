@@ -8,8 +8,8 @@ from Candidate t where type='普通文科' order by rank;
 生成第一个表
 所有‘  ’里换成占位符
 由combobox的内容确定
-select t.CollegeID,t.MajorName,r.rank,t.ma,t.mi,t.c 
-from (select Candidate.CollegeID,zhuanye.MajorName,max(tot_score) ma,min(tot_score) mi,count(*) c
+select t.ID,t.MajorName,r.rank,t.ma,t.mi,t.c 
+from (select zhuanye.ID,zhuanye.MajorName,max(tot_score) ma,min(tot_score) mi,count(*) c
 from (Candidate  join zhuanye on Candidate.zhuanye_ID=zhuanye.ID 
 and Candidate.CollegeID=zhuanye.college_id) 
 where AdmissionLevel='本科一批' and CollegeName='中央民族大学' and Candidate.type='普通文科' group by zhuanye.MajorName)
