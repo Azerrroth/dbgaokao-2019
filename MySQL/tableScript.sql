@@ -7,7 +7,6 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 -- -----------------------------------------------------
 -- Schema test
 -- -----------------------------------------------------
-
 DROP TABLE if exists college;
 DROP TABLE if exists zhuanye;
 DROP TABLE if exists Account;
@@ -15,7 +14,7 @@ DROP TABLE if exists Candidate;
 DROP TABLE if exists InvitedList;
 DROP TABLE if exists rankArt;
 DROP TABLE if exists rankSci;
-
+drop table if exists favourite;
 -- -----------------------------------------------------
 -- Schema test
 -- -----------------------------------------------------
@@ -37,12 +36,11 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `test`.`zhuanye`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `test`.`zhuanye` (
+  `college_id` VARCHAR(3) NOT NULL,
   `ID` VARCHAR(3) NOT NULL,
   `name` VARCHAR(45) NULL,
-  `college_id` VARCHAR(3) NOT NULL,
-  `rank` INT NULL,
-  `type` VARCHAR(45) NULL DEFAULT 'wen  or li',
-  PRIMARY KEY (`ID`, `college_id`),
+  `type` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`college_id`, `ID`, `type`),
   INDEX `fk_zhuanye_college1_idx` (`college_id` ASC),
   CONSTRAINT `fk_zhuanye_college1`
     FOREIGN KEY (`college_id`)
@@ -57,19 +55,20 @@ DEFAULT CHARACTER SET = utf8;
 -- Table `test`.`Candidate`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `test`.`Candidate` (
-  `idCandidate` INT NOT NULL,
+  `idCandidate` VARCHAR(20) NOT NULL,
   `Candidate_name` VARCHAR(45) NULL,
   `gender` VARCHAR(45) NULL,
   `minzu` VARCHAR(45) NULL,
-  `status` TINYINT(1) NULL,
-  `addScore` VARCHAR(45) NULL,
-  `tot_score` INT(11) NULL,
+  `status` VARCHAR(20) NULL,
   `CollegeID` VARCHAR(3) NOT NULL,
   `CollegeName` VARCHAR(45) NULL,
+  `zf1` INT NULL,
+  `addScore` VARCHAR(45) NULL,
+  `tot_score` INT NULL,
   `AdmissionLevel` VARCHAR(45) NULL,
   `zhuanye_ID` VARCHAR(3) NOT NULL,
   `AdmitType` VARCHAR(45) NULL,
-  `AdmitTime` DATE NULL,
+  `AdmitTime` DATETIME NULL,
   `Chinese` INT NULL,
   `Math` INT NULL,
   `CLiberal` INT NULL,
@@ -77,17 +76,17 @@ CREATE TABLE IF NOT EXISTS `test`.`Candidate` (
   `ForeignLanguage` INT NULL,
   `FLListen` INT NULL,
   `FLSpeaking` INT NULL,
-  `z1` INT NULL,
-  `zf` INT NULL,
-  PRIMARY KEY (`idCandidate`))
+  `type` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`idCandidate`),
+  INDEX `fk_Candidate_zhuanye1_idx` (`CollegeID` ASC, `zhuanye_ID` ASC, `type` ASC),
+  CONSTRAINT `fk_Candidate_zhuanye1`
+    FOREIGN KEY (`CollegeID` , `zhuanye_ID` , `type`)
+    REFERENCES `test`.`zhuanye` (`college_id` , `ID` , `type`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-alter table college convert to character set utf8;
-alter table zhuanye convert to character set utf8;
-
-alter table `Candidate` add constraint `Candidate_fk1` foreign key(`zhuanye_ID`,`CollegeID`) REFERENCES `zhuanye`(`ID`,`college_id`);
-alter table `Candidate` add constraint `Candidate_fk2` foreign key(`CollegeName`) REFERENCES `college`(`idcollege`);
 
 -- -----------------------------------------------------
 -- Table `test`.`rankSci`
@@ -96,7 +95,8 @@ CREATE TABLE IF NOT EXISTS `test`.`rankSci` (
   `score` INT NOT NULL,
   `rank` INT NOT NULL,
   PRIMARY KEY (`score`))
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
@@ -135,52 +135,30 @@ CREATE TABLE IF NOT EXISTS `test`.`rankArt` (
   `score` INT NOT NULL,
   `rank` INT NOT NULL,
   PRIMARY KEY (`score`))
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
 
-USE `test` ;
-
--- -----------------------------------------------------
--- Placeholder table for view `test`.`zhuanyeList`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `test`.`zhuanyeList` (`ID` INT, `name` INT, `college_id` INT, `rank` INT, `type` INT);
 
 -- -----------------------------------------------------
--- Placeholder table for view `test`.`CollegeList_NameOrder`
+-- Table `test`.`favourite`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `test`.`CollegeList_NameOrder` (`idcollege` INT, `name` INT);
+CREATE TABLE IF NOT EXISTS `test`.`favourite` (
+  `college_id` VARCHAR(3) NOT NULL,
+  `name` VARCHAR(45) NULL,
+  `highestScore` INT NULL,
+  `lowestScore` INT NULL,
+  `type` VARCHAR(45) NOT NULL,
+  `Account_username` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`college_id`, `Account_username`, `type`),
+  INDEX `fk_favourite_Account1_idx` (`Account_username` ASC),
+  CONSTRAINT `fk_favourite_Account1`
+    FOREIGN KEY (`Account_username`)
+    REFERENCES `test`.`Account` (`username`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
 
--- -----------------------------------------------------
--- Placeholder table for view `test`.`CollegeList_IDOrder`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `test`.`CollegeList_IDOrder` (`id` INT);
-
--- -----------------------------------------------------
--- View `test`.`zhuanyeList`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `test`.`zhuanyeList`;
-USE `test`;
-CREATE  OR REPLACE VIEW `zhuanyeList` AS 
-SELECT t.* from zhuanye AS t
-GROUP BY college_id;
-
--- -----------------------------------------------------
--- View `test`.`CollegeList_NameOrder`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `test`.`CollegeList_NameOrder`;
-USE `test`;
-CREATE  OR REPLACE VIEW `CollegeList_NameOrder` AS
-select * 
-from college
-order by name;
-
--- -----------------------------------------------------
--- View `test`.`CollegeList_IDOrder`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `test`.`CollegeList_IDOrder`;
-USE `test`;
-CREATE  OR REPLACE VIEW `CollegeList_IDOrder` AS
-select * FROM college
-order by idcollege;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
