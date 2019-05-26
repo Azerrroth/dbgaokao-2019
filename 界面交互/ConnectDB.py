@@ -9,7 +9,65 @@ def connectDB(HostName,DbName, UserName, PassWord ):
     db.open()
     return db
 
-def dataset(table, db, str1, str2, str3):
+def datasetNew1(table, db, str1):
+    query=QtSql.QSqlQuery(db)
+    query.prepare("select ID,name from %s where  tot_cred='%s' "%(table, str1))
+    a=[]
+    length=rows=0
+    if(query.exec()):
+        #print("good")
+        length=len(query.record())
+        rows=query.size()
+        while(query.next()): 
+            b=[]
+            for i in range(len(query.record())):
+                b.append(query.value(i))
+            a.append(b)
+        #print(length)
+    #print(a)
+    return a, length, rows
+
+
+def Alldataset(table, db, str):
+    query=QtSql.QSqlQuery(db)
+    query.prepare("select * from %s where  course_id='%s' "%(table, str))
+    a=[]
+    length=rows=0
+    if(query.exec()):
+        #print("good")
+        length=len(query.record())
+        rows=query.size()
+        while(query.next()): 
+            b=[]
+            for i in range(len(query.record())):
+                b.append(query.value(i))
+            a.append(b)
+        #print(length)
+    #print(a)
+    return a, length, rows
+
+    
+def dataset1(table, db, str1):
+    query=QtSql.QSqlQuery(db)
+    query.prepare("select course_id,sec_id,semester,year,building,room_number from %s where  time_slot_id='%s' "%(table, str1))
+    a=[]
+    length=rows=0
+    if(query.exec()):
+        #print("good")
+        length=len(query.record())
+        rows=query.size()
+        while(query.next()): 
+            b=[]
+            for i in range(len(query.record())):
+                b.append(query.value(i))
+            a.append(b)
+        #print(length)
+    #print(a)
+    return a, length, rows
+
+
+
+def dataset3(table, db, str1, str2, str3):
     query=QtSql.QSqlQuery(db)
     query.prepare("select sec_id,year,room_number,time_slot_id from %s where course_id='%s' and semester='%s' and building='%s' "%(table, str1, str2, str3))
     a=[]
@@ -27,6 +85,8 @@ def dataset(table, db, str1, str2, str3):
     #print(a)
     return a, length, rows
 
+
+
 def selectdistinct(col, table, db):
     query=QtSql.QSqlQuery(db)
     query.prepare("select distinct %s from %s"%(col, table))
@@ -36,7 +96,7 @@ def selectdistinct(col, table, db):
          a.append(query.value(0))
     return a
 class Ui_MainWindow(object):
-    db=connectDB('127.0.0.1', 'hhlschema', 'HHL', '12345')
+    db=connectDB('youggls.top', 'test', 'abcdefg', '123456')
     
     #学院列表
     l=selectdistinct('dept_name', 'Student', db)

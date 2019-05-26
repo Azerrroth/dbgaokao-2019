@@ -10,7 +10,11 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import(QWidget, QTableWidget, QHBoxLayout, QApplication, QTableWidgetItem)
 from PyQt5.QtWidgets import*
 from ConnectDB import*
-
+from PyQt5.QtGui import*
+from PyQt5.QtCore import *
+from functools import partial
+from UseChild01 import*
+from Ui_CentralTest2 import*
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
@@ -24,6 +28,8 @@ class Ui_Form(object):
         font.setItalic(False)
         font.setUnderline(False)
         font.setWeight(75)
+
+
         self.label.setFont(font)
         self.label.setLocale(QtCore.QLocale(QtCore.QLocale.Chinese, QtCore.QLocale.China))
         self.label.setInputMethodHints(QtCore.Qt.ImhNone)
@@ -63,6 +69,8 @@ class Ui_Form(object):
         font.setPointSize(12)
         self.comboBox.setFont(font)
         self.comboBox.setObjectName("comboBox")
+        ##########添加的
+        self.comboBox.addItem("")
         
         
      
@@ -72,7 +80,7 @@ class Ui_Form(object):
         font.setPointSize(12)
         self.comboBox_2.setFont(font)
         self.comboBox_2.setObjectName("comboBox_2")
-        #self.comboBox_2.addItem("")
+        self.comboBox_2.addItem("")
         #self.comboBox_2.addItem("")
         self.verticalLayout_2.addWidget(self.comboBox_2)
         self.comboBox_3 = QtWidgets.QComboBox(self.layoutWidget)
@@ -80,7 +88,7 @@ class Ui_Form(object):
         font.setPointSize(12)
         self.comboBox_3.setFont(font)
         self.comboBox_3.setObjectName("comboBox_3")
-        #self.comboBox_3.addItem("")
+        self.comboBox_3.addItem("")
         #self.comboBox_3.addItem("")
         #self.comboBox_3.addItem("")
         #self.comboBox_3.addItem("")
@@ -95,8 +103,9 @@ class Ui_Form(object):
         #self.tableView.setObjectName("tableView")
         #self.tableView.setHidden(True)
         
-        self.tableWidget = QtWidgets.QTableWidget()
-        self.tableWidget.setGeometry(QtCore.QRect(200, 500, 500, 500))
+        self.tableWidget = QtWidgets.QTableWidget(Form)
+        ####更改
+        self.tableWidget.setGeometry(QtCore.QRect(200, 400, 630, 500))
         self.tableWidget.setObjectName("tableWidget")
         self.tableWidget.setHidden(True)
         
@@ -120,6 +129,25 @@ class Ui_Form(object):
         self.label_2.setBuddy(self.comboBox)
         self.label_3.setBuddy(self.comboBox_2)
         self.label_4.setBuddy(self.comboBox_3)
+
+
+        ###########更改：添加收藏夹
+        self.pushButton_4 = QtWidgets.QPushButton(Form)
+        self.pushButton_4.setGeometry(QtCore.QRect(900, 70, 111, 41))
+        self.pushButton_4.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.pushButton_4.setObjectName("pushButton")
+        self.pushButton_4.clicked.connect(self.showCentralTest)
+
+        self.pushButton_5 = QtWidgets.QPushButton(Form)
+        self.pushButton_5.setGeometry(QtCore.QRect(900, 120, 111, 41))
+        self.pushButton_5.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.pushButton_5.setObjectName("pushButton_2")
+        self.pushButton_5.clicked.connect(partial(self.Adddata, 1005, "hj", "100"))
+
+
+
+
+
         
         self.comboBox.activated[str].connect(self.Changetext1)
         self.comboBox_2.activated[str].connect(self.Changetext2)
@@ -147,8 +175,9 @@ class Ui_Form(object):
     def Choose(self):
         if len(self.s1)*len(self.s3)*len(self.s3)>0:
             db=connectDB('127.0.0.1', 'hhlschema', 'HHL', '12345' )
-            a, col, row=dataset("section", db, self.s1, self.s2, self.s3)
+            a, col, row=dataset3("section", db, self.s1, self.s2, self.s3)
             print(a)
+            db.close()
 
             
             self.tableWidget.setColumnCount(col)
@@ -157,11 +186,28 @@ class Ui_Form(object):
             for i in range(row):
                 for j in range(col):
                     if j==col-1:
-                        searchBtn=QPushButton(a[i][j])
+                        searchBtn = QPushButton(a[i][j])
+                        searchBtn.setObjectName("pushButtonx")
+                        searchBtn.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+                        searchBtn.setStyleSheet('''background-color:QColor(192,192,192);''')
+                        searchBtn.clicked.connect(partial(self.showSon, a[i][j]))
                         self.tableWidget.setCellWidget(i, j, searchBtn)
                     else:
                         self.tableWidget.setItem(i, j, QTableWidgetItem(str(a[i][j])))
-                        
+
+    # 更改,可传递参数
+    # 更改文本信息
+    def showSon(self, text):
+        self.child = ChildrenForm()
+        print(self.s1 + self.s2 + self.s3)
+        self.child.ChangeText(self.s1, self.s2, self.s3)
+        palette = QPalette()
+        palette.setColor(QPalette.Background, QColor(202, 216, 235))
+        self.child.setPalette(palette)
+
+        self.child.SearchStudent(text)
+        self.child.show()
+        print(text)
                         
             
            
@@ -173,37 +219,78 @@ class Ui_Form(object):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "FirstForm"))
         self.label.setText(_translate("Form", "2018年天津市普通高校招生批量投档录取最高分最低分数查询"))
-        self.label_2.setText(_translate("Form", "course_id"))
-        self.label_3.setText(_translate("Form", "semester"))
-        self.label_4.setText(_translate("Form", "building"))
+        self.label_2.setText(_translate("Form", "course_id:    "))
+        self.label_3.setText(_translate("Form", "semester:    "))
+        self.label_4.setText(_translate("Form", "building:    "))
         
         #self.comboBox.setItemText(0, _translate("Form", "本科提前批"))
         #self.comboBox.setItemText(1, _translate("Form", "本科一批"))
         #self.comboBox.setItemText(2, _translate("Form", "本科二批"))
         #self.comboBox.setItemText(3, _translate("Form", "高职高专"))
         #list1=self.Getlist("course_id")
+        ###################更改
         self.comboBox.addItems(self.Getlist("course_id"))
+        # self.comboBox.addItem("本科提前批")
+        # self.comboBox.addItem("本科一批")
+        # self.comboBox.addItem("本科二批")
+        # self.comboBox.addItem("高职高专")
         
         #self.comboBox_2.setItemText(0, _translate("Form", "文科"))
         #self.comboBox_2.setItemText(1, _translate("Form", "理科"))
         self.comboBox_2.addItems(self.Getlist("semester"))
+        # self.comboBox_2.addItem("文科")
+        # self.comboBox_2.addItem("理科")
         
         #self.comboBox_3.setItemText(0, _translate("Form", "南开大学"))
         #self.comboBox_3.setItemText(1, _translate("Form", "清华大学"))
         #self.comboBox_3.setItemText(2, _translate("Form", "北京大学"))
         #self.comboBox_3.setItemText(3, _translate("Form", "中国科学院大学"))
         self.comboBox_3.addItems(self.Getlist("building"))
-        
+        # self.comboBox.setHidden(True)
+        # self.comboBox_2.setHidden(True)
+        # self.comboBox_3.setHidden(True)
+
+        self.pushButton_4.setText(_translate("Form", "查看收藏夹"))
+        self.pushButton_5.setText(_translate("Form", "添加到收藏夹"))
         self.pushButton.setText(_translate("Form", "专业信息"))
         #self.label_5.setText(_translate("Form", "好一点"))
         self.pushButton_3.setText(_translate("Form", "提交"))
+        self.pushButton_3.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.pushButton_3.setStyleSheet('''background-color:QColor(192,192,192);''')
         self.pushButton_2.setText(_translate("Form", "重置"))
+        self.pushButton_2.clicked.connect(self.Clear)
+        self.pushButton_2.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.pushButton_2.setStyleSheet('''background-color:QColor(192,192,192);''')
+
+    def Clear(self):
+        self.tableWidget.setHidden(True)
     
     def Getlist(self, str):
         db=connectDB('127.0.0.1', 'hhlschema', 'HHL', '12345' )
         list=selectdistinct(str, "section", db)
         db.close()
-        return list 
+        return list
+
+    ######更改
+    def Adddata(self, v1, v2, v3):
+        print(str(v1) + v2 + v3)
+        db = connectDB('127.0.0.1', 'hhlschema', 'HHL', '12345')
+        query = QtSql.QSqlQuery(db)
+        query.prepare("insert into %s values('%d','%s','%s') " % ("new_table2", v1, v2, v3))
+        if (query.exec()):
+            db.close()
+
+    def showCentralTest(self):
+        # child= QtWidgets.QMainWindow()
+        child = Children()
+        # ui.setupUi(child)
+        child.show()
+
+
+class Children(QWidget, Ui_Formson):
+    def __init__(self):
+        super(Children, self).__init__()
+        self.setupUi(self)
     
         
 
@@ -212,6 +299,9 @@ if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
     Form = QtWidgets.QMainWindow()
+    palette=QPalette()
+    palette.setColor(QPalette.Background, QColor(202, 216, 235))
+    Form.setPalette(palette)
     ui = Ui_Form()
     #print(ui.s1+ui.s2+ui.s3)
     ui.setupUi(Form)
