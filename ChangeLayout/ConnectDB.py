@@ -9,6 +9,26 @@ def connectDB(HostName,DbName, UserName, PassWord ):
     db.open()
     return db
 
+def datasetNew1(table, db, str1):
+    query=QtSql.QSqlQuery(db)
+    query.prepare("select ID,name from %s where  tot_cred='%s' "%(table, str1))
+    a=[]
+    length=rows=0
+    if(query.exec()):
+        #print("good")
+        length=len(query.record())
+        rows=query.size()
+        while(query.next()): 
+            b=[]
+            for i in range(len(query.record())):
+                b.append(query.value(i))
+            a.append(b)
+        #print(length)
+    #print(a)
+    return a, length, rows
+
+
+
 def dataset1(table, db, str1):
     query=QtSql.QSqlQuery(db)
     query.prepare("select course_id,sec_id,semester,year,building,room_number from %s where  time_slot_id='%s' "%(table, str1))
