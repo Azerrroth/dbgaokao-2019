@@ -36,7 +36,7 @@ class Ui_Form(object):
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.setObjectName("label")
         self.layoutWidget = QtWidgets.QWidget(Form)
-        self.layoutWidget.setGeometry(QtCore.QRect(200, 70, 600, 600))
+        self.layoutWidget.setGeometry(QtCore.QRect(100, 70, 800, 600))
         self.layoutWidget.setObjectName("layoutWidget")
         self.formLayout = QtWidgets.QFormLayout(self.layoutWidget)
         self.formLayout.setContentsMargins(0, 0, 0, 0)
@@ -133,13 +133,13 @@ class Ui_Form(object):
 
         ###########更改：添加收藏夹
         self.pushButton_4 = QtWidgets.QPushButton(Form)
-        self.pushButton_4.setGeometry(QtCore.QRect(900, 70, 111, 41))
+        #self.pushButton_4.setGeometry(QtCore.QRect(900, 70, 111, 41))
         self.pushButton_4.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.pushButton_4.setObjectName("pushButton")
         self.pushButton_4.clicked.connect(self.showCentralTest)
 
         self.pushButton_5 = QtWidgets.QPushButton(Form)
-        self.pushButton_5.setGeometry(QtCore.QRect(900, 120, 111, 41))
+        #self.pushButton_5.setGeometry(QtCore.QRect(900, 120, 111, 41))
         self.pushButton_5.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.pushButton_5.setObjectName("pushButton_2")
         self.pushButton_5.clicked.connect(partial(self.Adddata, 1005, "hj", "100"))
@@ -174,38 +174,61 @@ class Ui_Form(object):
         #print(self.s1+self.s2+self.s3)
     def Choose(self):
         if len(self.s1)*len(self.s3)*len(self.s3)>0:
-            db=connectDB('127.0.0.1', 'hhlschema', 'HHL', '12345' )
-            a, col, row=dataset3("section", db, self.s1, self.s2, self.s3)
+            db=connectDB('youggls.top', 'test', 'abcdefg', '123456' )
+            a, col, row=dataset3(db, self.s1, self.s2, self.s3)
             print(a)
             db.close()
 
             
             self.tableWidget.setColumnCount(col)
-            self.tableWidget.setRowCount(row)
-            self.tableWidget.setHorizontalHeaderLabels(['sec_id', 'year', 'room_number', 'time_solt_id'])
+            self.tableWidget.setRowCount(row+1)
+            self.tableWidget.setHorizontalHeaderLabels(['专业代号', '专业名称', '录取最低位次', '最高分','最低分', '录取人数'])
+            max=0
+            min=10000
+            minrank=1
+            countper=0
             for i in range(row):
+                countper+=a[i][5]
                 for j in range(col):
-                    if j==col-1:
-                        searchBtn = QPushButton(a[i][j])
-                        searchBtn.setObjectName("pushButtonx")
-                        searchBtn.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-                        searchBtn.setStyleSheet('''background-color:QColor(192,192,192);''')
-                        searchBtn.clicked.connect(partial(self.showSon, a[i][j]))
-                        self.tableWidget.setCellWidget(i, j, searchBtn)
-                    else:
-                        self.tableWidget.setItem(i, j, QTableWidgetItem(str(a[i][j])))
+                    if i<row:
+                        if j==0:
+                            searchBtn = QPushButton(a[i][j])
+                            searchBtn.setObjectName("pushButtonx")
+                            searchBtn.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+                            searchBtn.setStyleSheet('''background-color:QColor(192,192,192);''')
+                            searchBtn.clicked.connect(partial(self.showSon, a[i][j], a[i][j+1]))
+                            self.tableWidget.setCellWidget(i, j, searchBtn)
+                        else:
+                            self.tableWidget.setItem(i, j, QTableWidgetItem(str(a[i][j])))
+                            if j==3:
+                                if max<a[i][j]:
+                                    max=a[i][j]
+                            if j==4:
+                                if min>a[i][j]:
+                                    min=a[i][j]
+                            if j==2:
+                                if minrank<a[i][j]:
+                                    minrank=a[i][j]
+                                
+            self.tableWidget.setCellWidget(row, 0, self.pushButton_4)
+            self.tableWidget.setCellWidget(row, 1, self.pushButton_5)
+            self.tableWidget.setItem(row, 2, QTableWidgetItem(str(minrank)))
+            self.tableWidget.setItem(row, 3, QTableWidgetItem(str(max)))
+            self.tableWidget.setItem(row, 4, QTableWidgetItem(str(min)))
+            self.tableWidget.setItem(row, 5, QTableWidgetItem(str(countper)))
+                        
 
     # 更改,可传递参数
     # 更改文本信息
-    def showSon(self, text):
+    def showSon(self, text, s4):
         self.child = ChildrenForm()
         print(self.s1 + self.s2 + self.s3)
-        self.child.ChangeText(self.s1, self.s2, self.s3)
+        self.child.ChangeText(self.s1, self.s2, self.s3, s4)
         palette = QPalette()
         palette.setColor(QPalette.Background, QColor(202, 216, 235))
         self.child.setPalette(palette)
 
-        self.child.SearchStudent(text)
+        self.child.SearchStudent(self.s1, self.s3, self.s2, s4)
         self.child.show()
         print(text)
                         
@@ -219,9 +242,9 @@ class Ui_Form(object):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "FirstForm"))
         self.label.setText(_translate("Form", "2018年天津市普通高校招生批量投档录取最高分最低分数查询"))
-        self.label_2.setText(_translate("Form", "course_id:    "))
-        self.label_3.setText(_translate("Form", "semester:    "))
-        self.label_4.setText(_translate("Form", "building:    "))
+        self.label_2.setText(_translate("Form", "批次: "))
+        self.label_3.setText(_translate("Form", "科类:  "))
+        self.label_4.setText(_translate("Form", "院校:  "))
         
         #self.comboBox.setItemText(0, _translate("Form", "本科提前批"))
         #self.comboBox.setItemText(1, _translate("Form", "本科一批"))
@@ -229,23 +252,24 @@ class Ui_Form(object):
         #self.comboBox.setItemText(3, _translate("Form", "高职高专"))
         #list1=self.Getlist("course_id")
         ###################更改
-        self.comboBox.addItems(self.Getlist("course_id"))
-        # self.comboBox.addItem("本科提前批")
-        # self.comboBox.addItem("本科一批")
-        # self.comboBox.addItem("本科二批")
-        # self.comboBox.addItem("高职高专")
+        self.comboBox.addItems(["本科提前批", "本科一批", "本科二批", "本科三批"])
+        #self.comboBox.addItem("本科提前批")
+        #self.comboBox.addItem("本科一批")
+        #self.comboBox.addItem("本科二批")
+        #self.comboBox.addItem("高职高专")
         
         #self.comboBox_2.setItemText(0, _translate("Form", "文科"))
         #self.comboBox_2.setItemText(1, _translate("Form", "理科"))
-        self.comboBox_2.addItems(self.Getlist("semester"))
-        # self.comboBox_2.addItem("文科")
-        # self.comboBox_2.addItem("理科")
+        self.comboBox_2.addItems(["普通文科", "普通理科"])
+        #self.comboBox_2.addItem("文科")
+        #self.comboBox_2.addItem("理科")
         
         #self.comboBox_3.setItemText(0, _translate("Form", "南开大学"))
         #self.comboBox_3.setItemText(1, _translate("Form", "清华大学"))
         #self.comboBox_3.setItemText(2, _translate("Form", "北京大学"))
         #self.comboBox_3.setItemText(3, _translate("Form", "中国科学院大学"))
-        self.comboBox_3.addItems(self.Getlist("building"))
+        self.comboBox_3.addItems(self.Getlist("CollegeName"))
+        #self.comboBox_3.addItem("中华人民共和国大学纽约分校")
         # self.comboBox.setHidden(True)
         # self.comboBox_2.setHidden(True)
         # self.comboBox_3.setHidden(True)
@@ -266,15 +290,15 @@ class Ui_Form(object):
         self.tableWidget.setHidden(True)
     
     def Getlist(self, str):
-        db=connectDB('127.0.0.1', 'hhlschema', 'HHL', '12345' )
-        list=selectdistinct(str, "section", db)
+        db=connectDB('youggls.top', 'test', 'abcdefg', '123456' )
+        list=selectdistinct(str, "college", db)
         db.close()
         return list
 
     ######更改
     def Adddata(self, v1, v2, v3):
         print(str(v1) + v2 + v3)
-        db = connectDB('127.0.0.1', 'hhlschema', 'HHL', '12345')
+        db = connectDB('youggls.top', 'test', 'abcdefg', '123456')
         query = QtSql.QSqlQuery(db)
         query.prepare("insert into %s values('%d','%s','%s') " % ("new_table2", v1, v2, v3))
         if (query.exec()):

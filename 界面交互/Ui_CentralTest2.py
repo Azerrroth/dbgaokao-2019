@@ -31,7 +31,7 @@ class Ui_Formson(object):
         FormsonIn.setWindowTitle(_translate("FormsonIn", "Form"))
     
     def OperateDB(self):
-        db=connectDB('127.0.0.1', 'hhlschema', 'HHL', '12345' )
+        db=connectDB('youggls.top', 'test', 'abcdefg', '123456')
         a, col, row=datasetNew1("new_table2", db, "100")
         db.close()
         self.tableWidget.setColumnCount(col+1)
@@ -55,7 +55,7 @@ class Ui_Formson(object):
         print(reply)
         if reply==16384:
             self.tableWidget.setHidden(True)
-            db=connectDB('127.0.0.1', 'hhlschema', 'HHL', '12345' )
+            db=connectDB('youggls.top', 'test', 'abcdefg', '123456' )
             query=QtSql.QSqlQuery(db)
             query.prepare("delete from %s where  ID='%d' "%("new_table2", value))
             if(query.exec()):

@@ -28,9 +28,9 @@ def datasetNew1(table, db, str1):
     return a, length, rows
 
 
-def Alldataset(table, db, str):
+def Alldataset(db, str):
     query=QtSql.QSqlQuery(db)
-    query.prepare("select * from %s where  course_id='%s' "%(table, str))
+    query.prepare("select * FROM Candidate where idCandidate='%s' "%( str))
     a=[]
     length=rows=0
     if(query.exec()):
@@ -47,9 +47,13 @@ def Alldataset(table, db, str):
     return a, length, rows
 
     
-def dataset1(table, db, str1):
+def dataset1(db,ke, xiao, lei, zhuan):
     query=QtSql.QSqlQuery(db)
-    query.prepare("select course_id,sec_id,semester,year,building,room_number from %s where  time_slot_id='%s' "%(table, str1))
+    query.prepare("""select idCandidate,Candidate_name,tot_score,AdmitType,Admittime
+from Candidate  join zhuanye on Candidate.zhuanye_ID=zhuanye.ID 
+and Candidate.CollegeID=zhuanye.college_id
+where AdmissionLevel='%s' and CollegeName='%s' and Candidate.type='%s' 
+and MajorName='%s' """%(ke, xiao, lei, zhuan))
     a=[]
     length=rows=0
     if(query.exec()):
@@ -67,9 +71,21 @@ def dataset1(table, db, str1):
 
 
 
-def dataset3(table, db, str1, str2, str3):
+def dataset3(db, str1, str2, str3):
     query=QtSql.QSqlQuery(db)
-    query.prepare("select sec_id,year,room_number,time_slot_id from %s where course_id='%s' and semester='%s' and building='%s' "%(table, str1, str2, str3))
+    sql="""select t.ID,t.MajorName,r.rank,t.ma,t.mi,t.c 
+from (select zhuanye.ID,zhuanye.MajorName,max(tot_score) ma,min(tot_score) mi,count(*) c
+from (Candidate  join zhuanye on Candidate.zhuanye_ID=zhuanye.ID 
+and Candidate.CollegeID=zhuanye.college_id) 
+where AdmissionLevel='%s' and CollegeName='%s' and Candidate.type='%s' group by zhuanye.MajorName)
+as t join rankArt r on t.ma=score"""
+
+    query.prepare("""select t.ID,t.MajorName,r.rank,t.ma,t.mi,t.c 
+from (select zhuanye.ID,zhuanye.MajorName,max(tot_score) ma,min(tot_score) mi,count(*) c
+from (Candidate  join zhuanye on Candidate.zhuanye_ID=zhuanye.ID 
+and Candidate.CollegeID=zhuanye.college_id) 
+where AdmissionLevel='%s' and CollegeName='%s' and Candidate.type='%s' group by zhuanye.MajorName)
+as t join rankArt r on t.ma=score"""%(str1, str3, str2))
     a=[]
     length=rows=0
     if(query.exec()):
@@ -95,6 +111,9 @@ def selectdistinct(col, table, db):
        while(query.next()): 
          a.append(query.value(0))
     return a
+    
+    
+    
 class Ui_MainWindow(object):
     db=connectDB('youggls.top', 'test', 'abcdefg', '123456')
     
