@@ -33,7 +33,7 @@ class Ui_sign(object):
     szhucemm = ""
     sconfirmmm = ""
     sinvitednum = ""
-    db = connectDB('127.0.0.1', 'test', 'HHL', '12345')
+    db = connectDB('youggls.top', 'test', 'abcdefg', '123456')
 
     def setupUi(self, sign):
         sign.setObjectName("sign")
@@ -136,9 +136,11 @@ class Ui_sign(object):
         self.szhanghao = self.zhanghao.text()
         self.smima = self.mima.text()
         query = QtSql.QSqlQuery(self.db)
-        query.prepare("select * from account where username='%s' and pwd='%s'" % (self.szhanghao, self.smima))
+        query.prepare("select * from Account where username='%s' and pwd='%s'" % (self.szhanghao, self.smima))
         if query.exec() and query.size() != 0:
             print("连接成功")
+            self.db.close()
+            #self.setHidden(True)
             cl = Children()
             palette = QPalette()
             palette.setColor(QPalette.Background, QColor(202, 216, 235))
@@ -154,9 +156,9 @@ class Ui_sign(object):
         self.sconfirmmm = self.querenmima.text()
         self.sinvitednum = self.yaoqingma.text()
         query = QtSql.QSqlQuery(self.db)
-        query.prepare("select * from account where username='%s'" % (self.szhucezh))
+        query.prepare("select * from Account where username='%s'" % (self.szhucezh))
         query1 = QtSql.QSqlQuery(self.db)
-        query1.prepare("select * from invitedlist where invitedlist.key='%s'" % (self.sinvitednum))
+        query1.prepare("select * from InvitedList where InvitedList.key='%s'" % (self.sinvitednum))
         if len(self.szhucezh) == 0:
             print("账号为空")
         else:
@@ -189,10 +191,10 @@ class Ui_sign(object):
                         print("邀请码失效")
                     else:
                         print(a, b)
-                        query.prepare("insert into account values('%s','%s','%s')" % (
+                        query.prepare("insert into Account values('%s','%s','%s')" % (
                         self.szhucezh, self.szhucemm, self.sinvitednum))
                         query.exec()
-                        query.prepare("update invitedlist set number=%d where invitedlist.key='%s'" % (b - 1, a))
+                        query.prepare("update InvitedList set number=%d where InvitedListist.key='%s'" % (b - 1, a))
                         query.exec()
                         QMessageBox.about(sign, "提示", "注册成功")
                         print("注册成功")

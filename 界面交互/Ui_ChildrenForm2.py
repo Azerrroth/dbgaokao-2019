@@ -13,6 +13,7 @@ from PyQt5.QtWidgets import*
 from ConnectDB import*
 from functools import partial
 from Ui_ChildrenForm3 import*
+import time
 
 class Ui_ChildrenForm(object):
     def setupUi(self, ChildrenForm):
@@ -90,20 +91,21 @@ class Ui_ChildrenForm(object):
         self.pushButton.setText(_translate("ChildrenForm", "查询考生信息"))
     
     #更改文本信息
-    def ChangeText(self, str1, str2, str3):
+    def ChangeText(self, str1, str2, str3, str4):
         _translate = QtCore.QCoreApplication.translate
         self.label_2.setText(_translate("ChildrenForm",str1))
         self.label_3.setText(_translate("ChildrenForm", str2))
         self.label_5.setText(_translate("ChildrenForm", str3))
+        self.label_8.setText(_translate("ChildrenForm", str4))
         
         
-    def SearchStudent(self, str):
-        db=connectDB('127.0.0.1', 'hhlschema', 'HHL', '12345')
-        a, col, row=dataset1("section", db, str)
+    def SearchStudent(self, ke, xiao, lei, zhuan):
+        db=connectDB('youggls.top', 'test', 'abcdefg', '123456')
+        a, col, row=dataset1(db, ke, xiao, lei, zhuan)
         db.close()
         self.tableWidget.setColumnCount(col)
         self.tableWidget.setRowCount(row)
-        self.tableWidget.setHorizontalHeaderLabels(['course_id','sec_id','semester',  'year','building' 'room_number'])
+        self.tableWidget.setHorizontalHeaderLabels(['准考证号','考生姓名','总分',  '考生类别','录取时间' ])
         for i in range(row):
             for j in range(col):
                 if j==0:
@@ -113,8 +115,11 @@ class Ui_ChildrenForm(object):
                     searchBtn.setStyleSheet('''background-color:QColor(192,192,192);''')
                     searchBtn.clicked.connect(partial(self.showSon2, a[i][j]))
                     self.tableWidget.setCellWidget(i, j, searchBtn)
+                elif j<=col-2:
+                    self.tableWidget.setItem(i, j, QTableWidgetItem(str(a[i][j])))
                 else:
-                    self.tableWidget.setItem(i, j, QTableWidgetItem(a[i][j]))
+                    print(a[i][j])
+                    self.tableWidget.setItem(i, j, QTableWidgetItem("2018-7-15 09:12:03"))
         self.tableWidget.show()
     
     def showSon2(self, text):
