@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 
 # Form implementation generated from reading ui file 'D:\Documents\eric\zhuce.ui'
 #
@@ -16,7 +16,7 @@ from PyQt5.QtWidgets import*
 
 
 def connectDB(HostName, DbName, UserName, PassWord):
-    db = QtSql.QSqlDatabase.addDatabase('QMYSQL')
+    db = QtSql.QSqlDatabase.addDatabase('QMYSQL','qt_sql_default_connection')
     db.setHostName(HostName)
     db.setDatabaseName(DbName)
     db.setUserName(UserName)
@@ -33,7 +33,7 @@ class Ui_sign(object):
     szhucemm = ""
     sconfirmmm = ""
     sinvitednum = ""
-    db = connectDB('127.0.0.1', 'test', 'HHL', '12345')
+    db = connectDB('127.0.0.1', 'test', 'newuser', 'qwerty123456')
 
     def setupUi(self, sign):
         sign.setObjectName("sign")
@@ -137,16 +137,19 @@ class Ui_sign(object):
         self.smima = self.mima.text()
         query = QtSql.QSqlQuery(self.db)
         query.prepare("select * from account where username='%s' and pwd='%s'" % (self.szhanghao, self.smima))
-        if query.exec() and query.size() != 0:
-            print("连接成功")
-            cl = Children()
-            palette = QPalette()
-            palette.setColor(QPalette.Background, QColor(202, 216, 235))
-            cl.setPalette(palette)
-            cl.show()
+        if query.exec():
+            if query.size()!=0:
+                print("连接成功")
+                cl = Children()
+                palette = QPalette()
+                palette.setColor(QPalette.Background, QColor(202, 216, 235))
+                cl.setPalette(palette)
+                cl.show()
+            else:
+                QMessageBox.about(sign, "提示", "账号或密码错误")
+                print("账号或密码错误")
         else:
-            QMessageBox.about(sign, "提示", "账号或密码错误")
-            print("账号或密码错误")
+            print("连接失败")
 
     def newaccountinfo(self):
         self.szhucezh = self.zhucezhanghao.text()
@@ -227,4 +230,4 @@ if __name__ == "__main__":
     ui.setupUi(sign)
     sign.show()
     sys.exit(app.exec_())
-    ui.db.close()
+    
