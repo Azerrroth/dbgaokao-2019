@@ -28,7 +28,7 @@ class Form(QWidget, Ui_Form):
         self.setupUi(self)
     
     @pyqtSlot()
-    def on_pushButton_clicked(self):
+    def on_pushButtonx_clicked(self):
         """
         Slot documentation goes here.
         """

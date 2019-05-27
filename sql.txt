@@ -1,0 +1,35 @@
+生成文科的排名，同分同名之后的名次多加上同分的人数
+理科对着就行
+delete from rankArt;
+insert into rankArt (score,rank) select distinct tot_score, ifnull((select count(*) from Candidate
+ where tot_score>t.tot_score),0)+1 as rank
+from Candidate t where type='普通文科' order by rank;
+
+生成第一个表
+所有‘  ’里换成占位符
+由combobox的内容确定
+select t.ID,t.MajorName,r.rank,t.ma,t.mi,t.c 
+from (select zhuanye.ID,zhuanye.MajorName,max(tot_score) ma,min(tot_score) mi,count(*) c
+from (Candidate  join zhuanye on Candidate.zhuanye_ID=zhuanye.ID 
+and Candidate.CollegeID=zhuanye.college_id) 
+where AdmissionLevel='本科一批' and CollegeName='中央民族大学' and Candidate.type='普通文科' group by zhuanye.MajorName)
+as t join rankArt r on t.ma=score
+
+第三页的表
+其中MajorName由button点击时确定
+其他条件继承前页
+select idCandidate,Candidate_name,tot_score,AdmitType,Admittime
+from Candidate  join zhuanye on Candidate.zhuanye_ID=zhuanye.ID 
+and Candidate.CollegeID=zhuanye.college_id
+where AdmissionLevel='本科一批' and CollegeName='中央民族大学' and Candidate.type='普通文科' 
+and MajorName='经济学类'
+
+推荐
+根据输入分数推荐可以报的学校专业及专业的最高分最低分
+推荐的区间自己设定，文理科要从输入获取
+ select  CollegeName,MajorName,min(tot_score),max(tot_score) from Candidate join zhuanye on Candidate.zhuanye_ID=zhuanye.ID 
+where tot_score between 399 and 410 and Candidate.type='普通文科'   group by MajorName,CollegeName order by tot_score
+
+获取考生信息
+考生号由button中文本获得
+select * FROM Candidate where idCandidate='18150102110001';

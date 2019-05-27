@@ -16,12 +16,12 @@ from PyQt5.QtWidgets import*
 
 
 def connectDB(HostName, DbName, UserName, PassWord):
-    db = QtSql.QSqlDatabase.addDatabase('QMYSQL')
+    db = QtSql.QSqlDatabase.addDatabase('QMYSQL','qt_sql_default_connection')
     db.setHostName(HostName)
     db.setDatabaseName(DbName)
     db.setUserName(UserName)
     db.setPassword(PassWord)
-    db.setPort(3306)  # ç«¯å£å·
+    db.setPort(3306)  # ¶Ë¿ÚºÅ
     db.open()
     return db
 
@@ -33,7 +33,7 @@ class Ui_sign(object):
     szhucemm = ""
     sconfirmmm = ""
     sinvitednum = ""
-    db = connectDB('127.0.0.1', 'test', 'HHL', '12345')
+    db = connectDB('127.0.0.1', 'test', 'newuser', 'qwerty123456')
 
     def setupUi(self, sign):
         sign.setObjectName("sign")
@@ -137,16 +137,19 @@ class Ui_sign(object):
         self.smima = self.mima.text()
         query = QtSql.QSqlQuery(self.db)
         query.prepare("select * from account where username='%s' and pwd='%s'" % (self.szhanghao, self.smima))
-        if query.exec() and query.size() != 0:
-            print("è¿æ¥æˆåŠŸ")
-            cl = Children()
-            palette = QPalette()
-            palette.setColor(QPalette.Background, QColor(202, 216, 235))
-            cl.setPalette(palette)
-            cl.show()
+        if query.exec():
+            if query.size()!=0:
+                print("Á¬½Ó³É¹¦")
+                cl = Children()
+                palette = QPalette()
+                palette.setColor(QPalette.Background, QColor(202, 216, 235))
+                cl.setPalette(palette)
+                cl.show()
+            else:
+                QMessageBox.about(sign, "ÌáÊ¾", "ÕËºÅ»òÃÜÂë´íÎó")
+                print("ÕËºÅ»òÃÜÂë´íÎó")
         else:
-            QMessageBox.about(sign, "æç¤º", "è´¦å·æˆ–å¯†ç é”™è¯¯")
-            print("è´¦å·æˆ–å¯†ç é”™è¯¯")
+            print("Á¬½ÓÊ§°Ü")
 
     def newaccountinfo(self):
         self.szhucezh = self.zhucezhanghao.text()
@@ -158,26 +161,26 @@ class Ui_sign(object):
         query1 = QtSql.QSqlQuery(self.db)
         query1.prepare("select * from invitedlist where invitedlist.key='%s'" % (self.sinvitednum))
         if len(self.szhucezh) == 0:
-            print("è´¦å·ä¸ºç©º")
+            print("ÕËºÅÎª¿Õ")
         else:
             query.exec()
             if query.size() != 0:
-                QMessageBox.about(sign, "æç¤º", "è´¦å·å·²å­˜åœ¨")
-                print("è´¦å·å·²å­˜åœ¨")
+                QMessageBox.about(sign, "ÌáÊ¾", "ÕËºÅÒÑ´æÔÚ")
+                print("ÕËºÅÒÑ´æÔÚ")
             elif self.szhucemm != self.sconfirmmm:
-                QMessageBox.about(sign, "æç¤º", "å¯†ç ä¸ä¸€è‡´")
-                print("å¯†ç ä¸ä¸€è‡´")
+                QMessageBox.about(sign, "ÌáÊ¾", "ÃÜÂë²»Ò»ÖÂ")
+                print("ÃÜÂë²»Ò»ÖÂ")
             elif len(self.szhucemm) == 0:
-                QMessageBox.about(sign, "æç¤º", "å¯†ç ä¸ºç©º")
-                print("å¯†ç ä¸ºç©º")
+                QMessageBox.about(sign, "ÌáÊ¾", "ÃÜÂëÎª¿Õ")
+                print("ÃÜÂëÎª¿Õ")
             elif len(self.sinvitednum) == 0:
-                QMessageBox.about(sign, "æç¤º", "éªŒè¯ç ä¸ºç©º")
-                print("éªŒè¯ç ä¸ºç©º")
+                QMessageBox.about(sign, "ÌáÊ¾", "ÑéÖ¤ÂëÎª¿Õ")
+                print("ÑéÖ¤ÂëÎª¿Õ")
             else:
                 query1.exec()
                 if query1.size() == 0:
-                    QMessageBox.about(sign, "æç¤º", "é‚€è¯·ç æ— æ•ˆ")
-                    print("é‚€è¯·ç æ— æ•ˆ")
+                    QMessageBox.about(sign, "ÌáÊ¾", "ÑûÇëÂëÎŞĞ§")
+                    print("ÑûÇëÂëÎŞĞ§")
                 else:
                     a = ""
                     b = 0
@@ -185,8 +188,8 @@ class Ui_sign(object):
                         a = query1.value(0)
                         b = query1.value(1)
                     if (b == 0):
-                        QMessageBox.about(sign, "æç¤º", "é‚€è¯·ç å¤±æ•ˆ")
-                        print("é‚€è¯·ç å¤±æ•ˆ")
+                        QMessageBox.about(sign, "ÌáÊ¾", "ÑûÇëÂëÊ§Ğ§")
+                        print("ÑûÇëÂëÊ§Ğ§")
                     else:
                         print(a, b)
                         query.prepare("insert into account values('%s','%s','%s')" % (
@@ -194,24 +197,24 @@ class Ui_sign(object):
                         query.exec()
                         query.prepare("update invitedlist set number=%d where invitedlist.key='%s'" % (b - 1, a))
                         query.exec()
-                        QMessageBox.about(sign, "æç¤º", "æ³¨å†ŒæˆåŠŸ")
-                        print("æ³¨å†ŒæˆåŠŸ")
+                        QMessageBox.about(sign, "ÌáÊ¾", "×¢²á³É¹¦")
+                        print("×¢²á³É¹¦")
 
     def retranslateUi(self, sign):
         _translate = QtCore.QCoreApplication.translate
         sign.setWindowTitle(_translate("sign", "MainWindow"))
-        self.buttonBox.setText(_translate("sign", "ç¡®è®¤"))
-        self.buttonBox2.setText(_translate("sign", "ç¡®è®¤"))
-        self.buttonBox_q1.setText(_translate("sign", "å–æ¶ˆ"))
-        self.buttonBox_q2.setText(_translate("sign", "å–æ¶ˆ"))
-        self.label.setText(_translate("sign", "è´¦å·"))
-        self.label_2.setText(_translate("sign", "å¯†ç "))
-        self.signsystem.setTabText(self.signsystem.indexOf(self.denglu), _translate("sign", "ç™»å½•"))
-        self.label_3.setText(_translate("sign", "è´¦å·"))
-        self.label_4.setText(_translate("sign", "å¯†ç "))
-        self.label_5.setText(_translate("sign", "ç¡®è®¤å¯†ç "))
-        self.label_6.setText(_translate("sign", "é‚€è¯·ç "))
-        self.signsystem.setTabText(self.signsystem.indexOf(self.zhuce), _translate("sign", "æ³¨å†Œ"))
+        self.buttonBox.setText(_translate("sign", "È·ÈÏ"))
+        self.buttonBox2.setText(_translate("sign", "È·ÈÏ"))
+        self.buttonBox_q1.setText(_translate("sign", "È¡Ïû"))
+        self.buttonBox_q2.setText(_translate("sign", "È¡Ïû"))
+        self.label.setText(_translate("sign", "ÕËºÅ"))
+        self.label_2.setText(_translate("sign", "ÃÜÂë"))
+        self.signsystem.setTabText(self.signsystem.indexOf(self.denglu), _translate("sign", "µÇÂ¼"))
+        self.label_3.setText(_translate("sign", "ÕËºÅ"))
+        self.label_4.setText(_translate("sign", "ÃÜÂë"))
+        self.label_5.setText(_translate("sign", "È·ÈÏÃÜÂë"))
+        self.label_6.setText(_translate("sign", "ÑûÇëÂë"))
+        self.signsystem.setTabText(self.signsystem.indexOf(self.zhuce), _translate("sign", "×¢²á"))
 
 class Children(QWidget, Ui_Form):
     def __init__(self):
@@ -227,4 +230,4 @@ if __name__ == "__main__":
     ui.setupUi(sign)
     sign.show()
     sys.exit(app.exec_())
-    ui.db.close()
+    

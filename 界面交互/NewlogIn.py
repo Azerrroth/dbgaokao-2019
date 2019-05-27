@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 
 # Form implementation generated from reading ui file 'D:\Documents\eric\zhuce.ui'
 #
@@ -16,7 +16,7 @@ from PyQt5.QtWidgets import*
 
 
 def connectDB(HostName, DbName, UserName, PassWord):
-    db = QtSql.QSqlDatabase.addDatabase('QMYSQL')
+    db = QtSql.QSqlDatabase.addDatabase('QMYSQL','qt_sql_default_connection')
     db.setHostName(HostName)
     db.setDatabaseName(DbName)
     db.setUserName(UserName)
@@ -33,7 +33,11 @@ class Ui_sign(object):
     szhucemm = ""
     sconfirmmm = ""
     sinvitednum = ""
-    db = connectDB('127.0.0.1', 'test', 'HHL', '12345')
+<<<<<<< HEAD
+    db = connectDB('127.0.0.1', 'test', 'newuser', 'qwerty123456')
+=======
+    db = connectDB('youggls.top', 'test', 'abcdefg', '123456')
+>>>>>>> b82d9e31cc60ad19c87807b9a4d855ec3b87e825
 
     def setupUi(self, sign):
         sign.setObjectName("sign")
@@ -136,17 +140,33 @@ class Ui_sign(object):
         self.szhanghao = self.zhanghao.text()
         self.smima = self.mima.text()
         query = QtSql.QSqlQuery(self.db)
+<<<<<<< HEAD
         query.prepare("select * from account where username='%s' and pwd='%s'" % (self.szhanghao, self.smima))
+        if query.exec():
+            if query.size()!=0:
+                print("连接成功")
+                cl = Children()
+                palette = QPalette()
+                palette.setColor(QPalette.Background, QColor(202, 216, 235))
+                cl.setPalette(palette)
+                cl.show()
+            else:
+                QMessageBox.about(sign, "提示", "账号或密码错误")
+                print("账号或密码错误")
+=======
+        query.prepare("select * from Account where username='%s' and pwd='%s'" % (self.szhanghao, self.smima))
         if query.exec() and query.size() != 0:
             print("连接成功")
+            self.db.close()
+            #self.setHidden(True)
             cl = Children()
             palette = QPalette()
             palette.setColor(QPalette.Background, QColor(202, 216, 235))
             cl.setPalette(palette)
             cl.show()
+>>>>>>> b82d9e31cc60ad19c87807b9a4d855ec3b87e825
         else:
-            QMessageBox.about(sign, "提示", "账号或密码错误")
-            print("账号或密码错误")
+            print("连接失败")
 
     def newaccountinfo(self):
         self.szhucezh = self.zhucezhanghao.text()
@@ -154,9 +174,9 @@ class Ui_sign(object):
         self.sconfirmmm = self.querenmima.text()
         self.sinvitednum = self.yaoqingma.text()
         query = QtSql.QSqlQuery(self.db)
-        query.prepare("select * from account where username='%s'" % (self.szhucezh))
+        query.prepare("select * from Account where username='%s'" % (self.szhucezh))
         query1 = QtSql.QSqlQuery(self.db)
-        query1.prepare("select * from invitedlist where invitedlist.key='%s'" % (self.sinvitednum))
+        query1.prepare("select * from InvitedList where InvitedList.key='%s'" % (self.sinvitednum))
         if len(self.szhucezh) == 0:
             print("账号为空")
         else:
@@ -189,10 +209,10 @@ class Ui_sign(object):
                         print("邀请码失效")
                     else:
                         print(a, b)
-                        query.prepare("insert into account values('%s','%s','%s')" % (
+                        query.prepare("insert into Account values('%s','%s','%s')" % (
                         self.szhucezh, self.szhucemm, self.sinvitednum))
                         query.exec()
-                        query.prepare("update invitedlist set number=%d where invitedlist.key='%s'" % (b - 1, a))
+                        query.prepare("update InvitedList set number=%d where InvitedListist.key='%s'" % (b - 1, a))
                         query.exec()
                         QMessageBox.about(sign, "提示", "注册成功")
                         print("注册成功")
@@ -227,4 +247,8 @@ if __name__ == "__main__":
     ui.setupUi(sign)
     sign.show()
     sys.exit(app.exec_())
+<<<<<<< HEAD
+    
+=======
     ui.db.close()
+>>>>>>> b82d9e31cc60ad19c87807b9a4d855ec3b87e825
