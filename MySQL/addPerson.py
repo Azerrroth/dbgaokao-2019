@@ -3,7 +3,8 @@ import pymysql
 cont = pymysql.connect(host='youggls.top',
                        user='abcdefg', password='123456', database='test', charset='utf8')
 cur = cont.cursor()
-with open('person/test.txt', 'r') as pe:
+#windows 下注意改路径/和\\，更改文件名同更改下面普通文科，普通理科
+with open('person/wen1.txt', 'r') as pe:
     data = pe.readlines()
     for i in data:
         a = i.split(',')
@@ -21,7 +22,7 @@ with open('person/test.txt', 'r') as pe:
         SELECT '{}','{}','{}','{}','{}','{}','{}',{},'{}',{},'{}','{}','{}',
         (select str_to_date('{}', '%Y-%m-%d %H:%i:%s')),{},{},{},{},{},{},{},'普通文科'
         from DUAL 
-        where not exists(select idCandidate from Candidate where idCandidate='{}');"""
+        where not exists(select idCandidate from Candidate where idCandidate='{}');"""# 普通文科，普通理科 根据插入注意改，这个数据没有。
                     .format(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9], a[10], a[11], a[12], a[13],
                             a[14], a[15], a[16], a[17], a[18], a[19], a[20], a[0]))
         print(i, end="")

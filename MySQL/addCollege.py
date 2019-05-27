@@ -3,7 +3,7 @@ import pymysql
 cont = pymysql.connect(host='youggls.top',
                        user='abcdefg', password='123456', database='test', charset='utf8')
 cur = cont.cursor()
-with open('collegename/wenerben.txt', 'r')as fff:  # change the file name in collegename
+with open('collegename/wenyiben.txt', 'r')as fff:  # change the file name in collegename
     data = fff.readlines()
     for i in data:
         a = i.split(',')

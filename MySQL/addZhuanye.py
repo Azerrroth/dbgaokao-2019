@@ -3,7 +3,7 @@ import pymysql
 cont = pymysql.connect(host='youggls.top',
                        user='abcdefg', password='123456', database='test', charset='utf8')
 cur = cont.cursor()
-with open('zhuanye/wen2.txt') as f:
+with open('zhuanye/wen1ans.txt') as f:
     data = f.readlines()
     for i in data:
         a = i.split(',')
