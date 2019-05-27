@@ -29,7 +29,3 @@ and MajorName='经济学类'
 推荐的区间自己设定，文理科要从输入获取
  select  CollegeName,MajorName,min(tot_score),max(tot_score) from Candidate join zhuanye on Candidate.zhuanye_ID=zhuanye.ID 
 where tot_score between 399 and 410 and Candidate.type='普通文科'   group by MajorName,CollegeName order by tot_score
-
-获取考生信息
-考生号由button中文本获得
-select * FROM Candidate where idCandidate='18150102110001';
