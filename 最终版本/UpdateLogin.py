@@ -1,4 +1,4 @@
-from PyQt5 import QtCore, QtGui, QtWidgets, QtSql
+﻿from PyQt5 import QtCore, QtGui, QtWidgets, QtSql
 from HuifuCover import *
 from PyQt5.QtGui import*
 from PyQt5.QtCore import *
@@ -32,11 +32,11 @@ class Ui_sign(object):
         
         sign.setObjectName("sign")
         sign.resize(1000, 500)
-        
+        ##############################
         self.centralwidget = QtWidgets.QWidget(sign)
         self.centralwidget.setObjectName("centralwidget")
         self.centralwidget.setStyleSheet("QWidget#centralwidget{\n"
-        "border-image: url(C:/Users/黄翰林/Desktop/数据库大作业/前端制作/GaoKao/images/gaokao.jpg);}")
+        "border-image: url(images/gaokao.jpg);}")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.centralwidget)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.signsystem = QtWidgets.QTabWidget(self.centralwidget)
