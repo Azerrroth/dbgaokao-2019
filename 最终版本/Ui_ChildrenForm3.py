@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 
 # Form implementation generated from reading ui file 'C:\Users\黄翰林\Desktop\数据库大作业\前端制作\GaoKao\ChildrenForm3.ui'
 #
@@ -95,7 +95,10 @@ class Ui_ChildrenFrom3(object):
         self.tableWidget_3.setItem(0, 0, QTableWidgetItem("成绩"))
         self.tableWidget_3.setItem(0, 1, QTableWidgetItem(str(a[0][14])))
         self.tableWidget_3.setItem(0, 2, QTableWidgetItem(str(a[0][15])))
-        self.tableWidget_3.setItem(0, 3, QTableWidgetItem(str(a[0][16])))
+        if  str(a[0][16])!='0':
+            self.tableWidget_3.setItem(0, 3, QTableWidgetItem(str(a[0][16])))
+        else:                                      
+           self.tableWidget_3.setItem(0, 3, QTableWidgetItem(str(a[0][17])))
         self.tableWidget_3.setItem(0, 4, QTableWidgetItem(str(a[0][18])))
         self.tableWidget_3.setItem(0, 5, QTableWidgetItem(str(a[0][19])))
         self.tableWidget_3.setItem(0, 6, QTableWidgetItem(str(a[0][20])))

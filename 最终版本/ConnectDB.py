@@ -1,4 +1,4 @@
-from PyQt5 import QtCore, QtGui, QtWidgets, QtSql
+﻿from PyQt5 import QtCore, QtGui, QtWidgets, QtSql
 def connectDB(HostName,DbName, UserName, PassWord ):
     db = QtSql.QSqlDatabase.addDatabase('QMYSQL', 'firstconnection')
     db.setHostName(HostName)
@@ -67,7 +67,7 @@ and MajorName='%s' """%(ke, xiao, lei, zhuan))
             a.append(b)
         #print(length)
     #print(a)
-    ln=(int)(len(a)/2)
+    ln=(int)((len(a)+1)/2)  #############################################
     b=a[:ln]
     chang=len(b)
     kuan=len(b[0])
@@ -83,20 +83,20 @@ def dataset3(db, str1, str2, str3):
 #and Candidate.CollegeID=zhuanye.college_id) 
 #where AdmissionLevel='%s' and CollegeName='%s' and Candidate.type='%s' group by zhuanye.MajorName)
 #as t join rankArt r on t.ma=score"""
-    if str2=='普通文科':
+    if str2=='普通文科':     ###################################
         query.prepare("""select t.ID,t.MajorName,r.rank,t.ma,t.mi,t.c 
-from (select zhuanye.ID,zhuanye.MajorName,max(tot_score) ma,min(tot_score) mi,count(*) c
+from (select zhuanye.ID,zhuanye.MajorName,max(tot_score) ma,min(tot_score) mi,ceil(count(*)/2) c
 from (Candidate  join zhuanye on Candidate.zhuanye_ID=zhuanye.ID 
 and Candidate.CollegeID=zhuanye.college_id) 
 where AdmissionLevel='%s' and CollegeName='%s' and Candidate.type='%s' group by zhuanye.MajorName)
-as t join rankArt r on t.ma=score"""%(str1, str3, str2))
-    elif str2=='普通理科':
+as t join rankArt r on t.mi=score"""%(str1, str3, str2))
+    elif str2=='普通理科':   ####################################
         query.prepare("""select t.ID,t.MajorName,r.rank,t.ma,t.mi,t.c 
-from (select zhuanye.ID,zhuanye.MajorName,max(tot_score) ma,min(tot_score) mi,count(*) c
+from (select zhuanye.ID,zhuanye.MajorName,max(tot_score) ma,min(tot_score) mi,ceil(count(*)/2) c
 from (Candidate  join zhuanye on Candidate.zhuanye_ID=zhuanye.ID 
 and Candidate.CollegeID=zhuanye.college_id) 
 where AdmissionLevel='%s' and CollegeName='%s' and Candidate.type='%s' group by zhuanye.MajorName)
-as t join rankSci r on t.ma=score"""%(str1, str3, str2))
+as t join rankSci r on t.mi=score"""%(str1, str3, str2))
     a=[]
     length=rows=0
     if(query.exec()):
@@ -106,7 +106,10 @@ as t join rankSci r on t.ma=score"""%(str1, str3, str2))
         while(query.next()): 
             b=[]
             for i in range(len(query.record())):
-                b.append(query.value(i))
+                if i==5:         #######################
+                   b.append((int)(query.value(i)))
+                else:
+                    b.append(query.value(i))
             a.append(b)
         #print(length)
     #print(a)
