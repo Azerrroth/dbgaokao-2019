@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 
 # Form implementation generated from reading ui file 'C:\Users\黄翰林\Desktop\数据库大作业\前端制作\GaoKao\cover.ui'
 #
@@ -15,7 +15,7 @@ from PyQt5.QtCore import *
 from functools import partial
 from UseChild01 import*
 from Ui_CentralTest2 import*
-import locale
+import xpinyin
 from xpinyin import Pinyin
 def my_function(lis):             #输入一个名字的列表
         pin=Pinyin()
