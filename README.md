@@ -1,11 +1,17 @@
-# 数据库
+# 数据库课程设计：高考帮——你的高考录取分数速查助手
+#### 项目简介：
+* 本项目拟结合数据库与前端界面的编写实现数据库中内容的查询，与偏好列表的添加删除等操作。
+* 通过Python爬取2018年真实的高考分数及录取信息，获得2018年内蒙古高考的详细录取信息等详细数据。
+* 同时，相比较于官方公布数据，官方出于防止宣传目的对于排名信息进行了隐藏（排名前100的考生不显示具体名次），本项目根据全部考生信息，进行了再次的排序比较，从而可以详细的查询到每名考生，每个分数的位次
+* 考生可根据个人需求，对于高考信息进行快速查询。
 #### 项目内容：
-* 使用MySQL、Python、PyQt5 实现的数据库作业
+* 使用MySQL、Python、PyQt5 实现数据库与前端界面相配合的数据展示及偏好收藏系统
 * [PyQt5连接MySQL](https://blog.csdn.net/jeekmary/article/details/79677285)
 * [Python GUI教程：在PyQt5中使用数据库](https://www.codercto.com/a/19041.html)
 * 参考项目：[简易人事管理系统](https://blog.csdn.net/weixin_40448659/article/details/82735230)
 #### 项目分工：
 * MySQL 数据库设计
-* [爬虫收集数据](https://blog.csdn.net/wearge/article/details/79995688)
+* 使用BeautifulSoup4及requests爬虫收集真实高考数据[爬虫收集数据](https://blog.csdn.net/wearge/article/details/79995688)
 * GUI界面实现
+* 加入我的喜好功能：可以将偏好的院校信息加入喜好页面，实现偏好院校速查
 * 添加功能……
