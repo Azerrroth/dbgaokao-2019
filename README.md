@@ -34,7 +34,8 @@
 包括考生信息表(Candidate)、专业信息表(zhuanye)和院校信息表(college)表中保留了全部院校、专业及考生的信息，其E-R图如右图
     * 院校信息表(college)：院校信息表主要保存了院校的编号和院校名称，并**以院校编号(idcollege)为主键**(用于区分有存在同一院校分多个编号招生的情况)
     * 专业信息表(zhuanye)：以**院校的编号(idcollege)为外键**，专业信息与院校信息为**多对一关系**，即同一院校可以有多个专业。在专业信息表中，以**院校编号(college_id)、专业编号(ID)和科类（文科或理科）(type)共同作为主键**，存在同一专业同时招文科理科考生情况，所以将科类加入主键，防止专业信息出现冲突情况。
-    * 考生信息表(Candidate)：考生信息表记录了考生的全部信息，包括：* 考生编号(idCandidate)、考生姓名(Candidate_name)、性别(gender)、民族(minzu)、录取状态(status)、录取院校编号(CollegeID)、院校名称(CollegeName)、总分(zf1)、加分条件(addScore)、特征总分（含加分）(tot_score)、录取批次(AdmissionLevel)、录取专业编号(zhuanye_ID)、录取类型(AdmitType)、录取时间(AdmitTime)、语文(Chinese)、数学(Math)、文科综合(CLiberal)、理科综合(CScience)、外语(ForeignLanguage)、外语听力(FLListen)、外语口语(FLSpeaking)、考生类型(type)* 条目组成。其中，以**考生编号(idCandidate)作为唯一主键**。其中，院校编号(CollegeID)、专业编号(zhuanye_ID)和考生类型(type)均为zhuanye表中外键。
+    * 考生信息表(Candidate)：考生信息表记录了考生的全部信息，
+    包括：* 考生编号(idCandidate)、考生姓名(Candidate_name)、性别(gender)、民族(minzu)、录取状态(status)、录取院校编号(CollegeID)、院校名称(CollegeName)、总分(zf1)、加分条件(addScore)、特征总分（含加分）(tot_score)、录取批次(AdmissionLevel)、录取专业编号(zhuanye_ID)、录取类型(AdmitType)、录取时间(AdmitTime)、语文(Chinese)、数学(Math)、文科综合(CLiberal)、理科综合(CScience)、外语(ForeignLanguage)、外语听力(FLListen)、外语口语(FLSpeaking)、考生类型(type)* 条目组成。其中，以**考生编号(idCandidate)作为唯一主键**。其中，院校编号(CollegeID)、专业编号(zhuanye_ID)和考生类型(type)均为zhuanye表中外键。
     * 由于考生信息包含属性较多，且对于复杂属性，如总分，考生与其为**一对一**关系，所以将复杂属性一并保存入考生表中，未对其进行关系模式的拆分，无需拆分为多个表来保存。<br><br>
 <img src=figure\排名表ER图.jpg width = "40%" alt="Accoun E-R图" align=right>
 
