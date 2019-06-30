@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+        <title>数据库课程设计：高考帮——你的高考录取分数速查助手</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+        <link href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css" rel="stylesheet" type="text/css">
+        <style>
+.task-list-item { list-style-type: none; } .task-list-item-checkbox { margin-left: -20px; vertical-align: middle; }
+</style>
+        <style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        
+        <script src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
+    </head>
+    <body>
+        <h1 id="%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AF%BE%E7%A8%8B%E8%AE%BE%E8%AE%A1%E9%AB%98%E8%80%83%E5%B8%AE%E4%BD%A0%E7%9A%84%E9%AB%98%E8%80%83%E5%BD%95%E5%8F%96%E5%88%86%E6%95%B0%E9%80%9F%E6%9F%A5%E5%8A%A9%E6%89%8B">数据库课程设计：高考帮——你的高考录取分数速查助手</h1>
+<h3 id="%E9%A1%B9%E7%9B%AE%E7%AE%80%E4%BB%8B">项目简介：</h3>
+<ul>
+<li>本项目拟结合数据库与前端界面的编写实现数据库中内容的查询，与偏好列表的添加删除等操作。</li>
+<li>通过Python爬取2018年真实的高考分数及录取信息，获得2018年内蒙古高考的详细录取信息等详细数据。</li>
+<li>同时，相比较于官方公布数据，官方出于防止宣传目的对于排名信息进行了隐藏（排名前100的考生不显示具体名次），本项目根据全部考生信息，进行了再次的排序比较，从而可以详细的查询到每名考生，每个分数的位次</li>
+<li>考生可根据个人需求，对2018年高考的录取信息进行快速查询。</li>
+</ul>
+<h3 id="%E9%A1%B9%E7%9B%AE%E5%86%85%E5%AE%B9">项目内容：</h3>
+<ul>
+<li>使用MySQL、Python、PyQt5 实现数据库与前端界面相配合的数据展示及偏好收藏系统</li>
+<li><a href="https://blog.csdn.net/jeekmary/article/details/79677285">PyQt5连接MySQL</a></li>
+<li><a href="https://www.codercto.com/a/19041.html">Python GUI教程：在PyQt5中使用数据库</a></li>
+<li>参考项目：<a href="https://blog.csdn.net/weixin_40448659/article/details/82735230">简易人事管理系统</a></li>
+</ul>
+<h3 id="%E9%A1%B9%E7%9B%AE%E5%88%86%E5%B7%A5">项目分工：</h3>
+<ul>
+<li>MySQL数据库设计</li>
+<li>使用BeautifulSoup4及requests爬虫收集真实高考数据<a href="https://blog.csdn.net/wearge/article/details/79995688">爬虫收集数据</a></li>
+<li>连接数据库</li>
+<li>GUI界面实现</li>
+<li>账户注册登录实现</li>
+<li>加入我的喜好功能：可以将偏好的院校信息加入喜好页面，实现偏好院校速查</li>
+<li>添加功能……</li>
+</ul>
+<h3 id="%E6%8A%80%E6%9C%AF%E7%BB%86%E8%8A%82">技术细节：</h3>
+<h4 id="mysql%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AE%BE%E8%AE%A1">MySQL数据库设计</h4>
+<img src=figure\AccountER图.jpg width = "40%" alt="Accoun E-R图" align=right>
+<!-- 插入图片的方法，src中保存图片链接（相对路径或网站链接） -->
+<ul>
+<li>
+<p>账户信息记录表：
+主要分为：账号密码(Account)、邀请码(InviteList)和个人喜好(favourite)。账户信息设计为邀请注册机制，即输入邀请码，即可完成注册。详细E-R图<strong>如右图</strong>。<br></p>
+<ul>
+<li>InvitedList与Account为<strong>一对多关系</strong>，旨在实现通过一个邀请码可以注册所个账号。在邀请码表中，<strong>key作为主键</strong>存储邀请码，而其后的number记录邀请码的剩余使用次数，在注册时将其与剩余注册次数比对，如若未找到对应邀请码或剩余次数为0，则无法进行注册。</li>
+<li>favourite表与Account相关联，并<strong>以Account中的username与其自身的college_id作为共同主键</strong>，favourite与Account为<strong>多对一关系</strong>，旨在能够实现一个用户可以收藏多个院校功能。
+favourite表中记录了每个用户的收藏院校名录，从这可以查询到每个用户的收藏院校。</li>
+<li>Account表中保存用户名和密码，其中<strong>以用户名为主键</strong>，用户登录时需要比对用户名与其密码相对应，才可以登录。<br><br>
+<img src=figure\院校信息ER图.jpg width = "45%" alt="Accoun E-R图" align=right></li>
+</ul>
+</li>
+<li>
+<p>院校信息表：
+包括考生信息表(Candidate)、专业信息表(zhuanye)和院校信息表(college)，表中保留了全部院校、专业及考生的信息，其E-R图如右图</p>
+<ul>
+<li>院校信息表(college)：院校信息表主要保存了院校的编号和院校名称，并<strong>以院校编号(idcollege)为主键</strong>(用于区分有存在同一院校分多个编号招生的情况)</li>
+<li>专业信息表(zhuanye)：以<strong>院校的编号(idcollege)为外键</strong>，专业信息与院校信息为<strong>多对一关系</strong>，即同一院校可以有多个专业。在专业信息表中，以<strong>院校编号(college_id)、专业编号(ID)和科类（文科或理科）(type)共同作为主键</strong>，存在同一专业同时招文科理科考生情况，所以将科类加入主键，防止专业信息出现冲突情况。</li>
+<li>考生信息表(Candidate)：考生信息表记录了考生的全部信息，包括：考生编号(idCandidate)、考生姓名(Candidate_name)、性别(gender)、民族(minzu)、录取状态(status)、录取院校编号(CollegeID)、院校名称(CollegeName)、总分(zf1)、加分条件(addScore)、特征总分（含加分）(tot_score)、录取批次(AdmissionLevel)、录取专业编号(zhuanye_ID)、录取类型(AdmitType)、录取时间(AdmitTime)、语文(Chinese)、数学(Math)、文科综合(CLiberal)、理科综合(CScience)、外语(ForeignLanguage)、外语听力(FLListen)、外语口语(FLSpeaking)、考生类型(type) 条目组成。其中，以<strong>考生编号(idCandidate)作为唯一主键</strong>。其中，院校编号(CollegeID)、专业编号(zhuanye_ID)和考生类型(type)均为zhuanye表中外键。</li>
+<li>由于考生信息包含属性较多，且对于复杂属性，如总分，考生与其为<strong>一对一</strong>关系，所以将复杂属性一并保存入考生表中，未对其进行关系模式的拆分，无需拆分为多个表来保存。<br><br>
+<img src=figure\排名表ER图.jpg width = "40%" alt="Accoun E-R图" align=right></li>
+</ul>
+</li>
+<li>
+<p>排名表：
+包括文科排名表(rankArt)和理科排名表(rankSci)。</p>
+<ul>
+<li>文科排名表与理科排名表均以<strong>分数为主键</strong>，设置排名表主要目的为在进行显示时减少查询需要消耗的复杂度，转而保存为固定数据，无需计算，仅需查找。</li>
+<li>其中排名表的数据综合计算插入和官方数据结合，通过计算的参数和官方数据进行组合，生成最终的排名表内容</li>
+</ul>
+</li>
+</ul>
+<h4 id="%E6%95%B0%E6%8D%AE%E8%8E%B7%E5%8F%96">数据获取</h4>
+<ul>
+<li>数据以2018年内蒙古普通高等学校招生全国统一考试录取信息为主要数据基础，通过Python爬虫(requests、BeautifulSoup4)从网页爬取录取数据，转而存入MySQL数据库进行分类储存，以供查询。</li>
+<li>院校信息来源：<a href="https://www.nm.zsks.cn/ptgxzs/xxcx/">内蒙古招生考试信息网</a></li>
+<li>排名信息来源：<a href="http://www.gaokw.com/gaokao/neimenggu/188786.html">2018年内蒙古高考成绩排名一分一段（文科/理科）</a></li>
+</ul>
+<h4 id="%E4%BD%BF%E7%94%A8qtsql%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93">使用QtSQL连接数据库</h4>
+<ul>
+<li>与数据库的连接
+<ul>
+<li>将其封装成函数，为每个用户新建一个连接，故可实现多个用户同时访问数据库</li>
+</ul>
+</li>
+<li>增删查改
+<ul>
+<li>利用query函数执行对应的sql语句，完成相应的操作</li>
+</ul>
+</li>
+</ul>
+<h4 id="%E5%89%8D%E7%AB%AF%E7%95%8C%E9%9D%A2%E8%AE%BE%E8%AE%A1%E7%94%A8pyqt5%E5%AE%9E%E7%8E%B0gui%E7%95%8C%E9%9D%A2">前端界面设计：用PyQt5实现GUI界面</h4>
+<ul>
+<li>登录界面
+<ul>
+<li>必须用已有的账户密码进行登录，没有账户必须先通过有效的邀请码进行注册然后登录。
+其中，登录和注册功能都是通过与数据库里的Account和InvitedList两个表相对应。</li>
+</ul>
+</li>
+<li>信息显示界面
+<ul>
+<li>标题主要利用QLabel来显示。
+进入录取分数查询界面时，通过QComboBox获取用户选定的内容，然后利用信号与槽机制对用户选定的条件，在数据库里进行相应查询，并将结果显示出来。其中每位用户我们都设置有自己喜欢的收藏夹，将自己感兴趣的学校的信息收藏到自己的收藏中，查看。在收藏夹里可进行删除操作，同时会有QMessageBox来提示。
+表格显示里，利用的是QWidgetable，并设置为只可看不可改的效果，在连接跳转处设置为QButton，可以点击查看录取的考生信息。</li>
+</ul>
+</li>
+<li>登录界面采用QMainWindow窗口，其余窗口都是继承父类采用QWidget窗口.</li>
+</ul>
+<h3 id="%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E">使用说明：</h3>
+<ul>
+<li>登录或注册后进入系统</li>
+<li>根据条件快速筛选所需数据后点击确定按钮查看</li>
+<li>可点击收藏夹相关按钮将数据收藏及管理</li>
+<li>可点击相关按钮进入获取具体信息</li>
+</ul>
+
+    </body>
+    </html>
